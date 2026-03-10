@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            width: 320px;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0 0 16px 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            font-size: 15px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 13px;
+            opacity: 0.95;
+        }
+
+        .steps {
+            background: #f8f9fa;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .steps h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .step {
+            display: flex;
+            align-items: start;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-num {
+            background: #667eea;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        <span class="status"></span>
+        CSS Klašu Meklētājs
+        <span style="font-size: 11px; color: #999; font-weight: normal; margin-left: 8px;">v2.8</span>
+    </h1>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <div>
+            <span style="font-weight: 600; font-size: 14px; color: #333;">Extension aktīvs šajā cilnē:</span>
+            <div style="font-size: 11px; color: #666; margin-top: 2px;">Katrai cilnei savs stāvoklis</div>
+        </div>
+        <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" id="extensionToggle" style="width: 40px; height: 20px; margin: 0;">
+            <span id="toggleLabel" style="margin-left: 8px; font-size: 13px; color: #999; font-weight: 600;">OFF</span>
+        </label>
+    </div>
+
+    <div id="disableLinksToggle" style="display: none; background: #fff3cd; padding: 12px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #ff9800;">
+        <label style="display: flex; align-items: center; cursor: pointer; justify-content: space-between;">
+            <div>
+                <span style="font-weight: 600; font-size: 14px; color: #856404;">🔗 Disable Links (preventDefault)</span>
+                <div style="font-size: 11px; color: #856404; margin-top: 2px;">Izslēdz, lai pārslēgtu tabus/linkus</div>
+            </div>
+            <input type="checkbox" id="disableLinksCheckbox" checked style="width: 40px; height: 20px; margin: 0;">
+        </label>
+    </div>
+
+    <div style="background: #fff; border: 2px solid #e0e0e0; border-radius: 8px; padding: 8px; margin-bottom: 16px;">
+        <div style="font-weight: 600; font-size: 13px; color: #333; margin-bottom: 8px;">Režīms:</div>
+        <div style="display: flex; gap: 8px;">
+            <label style="flex: 1; cursor: pointer;">
+                <input type="radio" name="mode" value="content" id="modeContent" checked style="margin-right: 6px;">
+                <span style="font-size: 13px;">Mark Content</span>
+            </label>
+            <label style="flex: 1; cursor: pointer;">
+                <input type="radio" name="mode" value="copy" id="modeClasses" style="margin-right: 6px;">
+                <span style="font-size: 13px;">Copy Classes</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="info-box" id="infoCopy">
+        <strong>👆 Ieslēdz extension augšā ↑</strong>
+        <p>Pēc tam noklikšķini uz satura - CSS klase nokopēsies!</p>
+    </div>
+
+    <div class="info-box" id="infoContent" style="display: none; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+        <strong>🎯 Mark Content režīms</strong>
+        <p>Atzīmē produkta saturu → Dabū ignore list chatbotam!</p>
+    </div>
+
+    <div class="steps" id="stepsCopy">
+        <h3>Kā lietot:</h3>
+        <div class="step">
+            <span class="step-num">1</span>
+            <span>Pārslēdz ON/OFF slēdzi uz ON</span>
+        </div>
+        <div class="step">
+            <span class="step-num">2</span>
+            <span>Noklikšķini uz elementa lapā</span>
+        </div>
+        <div class="step">
+            <span class="step-num">3</span>
+            <span>CSS klase nokopējas automātiski!</span>
+        </div>
+        <div class="step">
+            <span class="step-num">4</span>
+            <span>Ielīmē (Ctrl+V) kur vajag</span>
+        </div>
+    </div>
+
+    <div class="steps" id="stepsContent" style="display: none;">
+        <h3>Kā lietot:</h3>
+        <div class="step">
+            <span class="step-num">1</span>
+            <span>Ieslēdz extension (ON)</span>
+        </div>
+        <div class="step">
+            <span class="step-num">2</span>
+            <span>Klikšķis = Mark zaļš ✓</span>
+        </div>
+        <div class="step">
+            <span class="step-num">3</span>
+            <span>Shift+Klikšķis = Noņemt ✗</span>
+        </div>
+        <div class="step">
+            <span class="step-num">4</span>
+            <span>Ignore list atjaunojas automātiski!</span>
+        </div>
+    </div>
+
+    <div id="contentModePanel" style="display: none; margin-bottom: 16px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <button id="clearMarked" style="width: 100%; padding: 12px; background: #f44336; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                🗑️ Clear All Marked
+            </button>
+        </div>
+        <div id="ignoreListPanel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h3 style="margin: 0; font-size: 14px; color: #333;">Ignore List (chatbot ignorē):</h3>
+                <button id="copyIgnoreList" style="padding: 4px 12px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: 600;">Kopēt</button>
+            </div>
+            <textarea id="ignoreList" readonly style="width: 100%; height: 200px; padding: 10px; border: 2px solid #4CAF50; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; resize: vertical; background: #f1f8f4; color: #333;" placeholder="Ignore list parādīsies šeit..."></textarea>
+            <div style="font-size: 11px; color: #666; margin-top: 4px;">
+                <span id="ignoreCount">0</span> klases, ko chatbot ignorēs
+            </div>
+        </div>
+    </div>
+
+    <div id="warningBox" class="warning" style="display: none;">
+        ⚠️ Extension nav aktivizēts.<br>
+        <strong>Atjauno lapu (F5)</strong> un mēģini vēlreiz!
+    </div>
+
+    <div id="copyModePanel" style="margin-top: 16px; display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="margin: 0; font-size: 14px; color: #333;">Nokopētās klases:</h3>
+            <button id="clearHistory" style="padding: 4px 12px; background: #f44336; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: 600;">Notīrīt</button>
+        </div>
+        <textarea id="classHistory" readonly style="width: 100%; height: 150px; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; resize: vertical; background: #f8f9fa; color: #333;" placeholder="Nokopētās klases parādīsies šeit..."></textarea>
+    </div>
+
+    <div class="footer" style="margin-top: 12px;">
+        Extension aktīvs ✓
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
